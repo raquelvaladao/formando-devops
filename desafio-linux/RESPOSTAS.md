@@ -79,10 +79,10 @@ cp rootCA.crt /etc/pki/ca-trust/source/anchors/
 update-ca-trust extract
 ```
 
-#### 3-Alteração do arquivo de config. do NGINX pra aceitar conexões na porta 443 com SSL on.
+#### 3-Alteração do arquivo de config. do NGINX pra aceitar conexões na porta 443 com SSL on. </br></br>
 
 
-#### 4-Response completa do curl "https://www.desafio.local" com verificação do certificado
+### 4-Response completa do curl "https://www.desafio.local" com verificação do certificado
 
 ```
 RESPONSE:
@@ -193,25 +193,60 @@ access-control-allow-credentials: true
 
 ### 7.1 Expandir partição LVM
 
-1-Expandi sdb1 de 1G pra 5G com fdisk com o seguinte algoritmo
-  1.1 - desmontar LV
-  1.2 - inativar LV
-  1.3 - extender PV com fdisk
-  1.4 - partprobe
-  1.5 - pvresize
-  1.6 - reativar LV
-2-Expandi LV pra 5G
+1-Expandi sdb1 de 1G pra 5G com fdisk com o seguinte algoritmo </br>
+&emsp; 1.1 - desmontar LV </br>
+&emsp; 1.2 - inativar LV </br>
+&emsp; 1.3 - extender PV com fdisk </br>
+&emsp; 1.4 - partprobe </br>
+&emsp; 1.5 - pvresize </br>
+&emsp; 1.6 - reativar LV </br>
+2-Expandi LV pra 5G.  </br>
+3-Resultados dos comandos pvdisplay, lvdisplay e df -hT:
+
+```
+  PV Name               /dev/sdb1
+  VG Name               data_vg
+  PV Size               <5.00 GiB / not usable 3.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              1279
+  Free PE               0
+  Allocated PE          1279
+  PV UUID               XTxaEN-Cze7-7EWl-vWWE-7keb-p2Mq-mqJpiH
+```
+
+```
+  LV Path                /dev/data_vg/data_lv
+  LV Name                data_lv
+  VG Name                data_vg
+  LV UUID                sKjwY1-FbUA-D80u-U2sa-xCgU-1HZl-KYMmWO
+  LV Write Access        read/write
+  LV Creation host, time centos8.localdomain, 2022-09-02 18:01:23 +0000
+  LV Status              available
+  # open                 1
+  LV Size                <5.00 GiB
+  Current LE             1279
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+```
+
+```
+Filesystem                  Type      Size  Used Avail Use% Mounted on
+/dev/mapper/data_vg-data_lv ext4      5.0G  4.0M  4.7G   1% /data
+```
 
 
 
 ### 7.2 Criar partição LVM
 
-1 - Criei sdb2 de 5G com fdisk e formatei com "mkfs.ext4 /dev/sdb2"
+1 - Criei sdb2 de 5G com fdisk e formatei com "mkfs.ext4 /dev/sdb2" </br>
 2 - o resultado pode ser visto após montagem de sdb2 em /mnt. df -hT mostra:
 ```
 Filesystem                  Type      Size  Used Avail Use% Mounted on
 /dev/sdb2                   ext4      4.9G   20M  4.6G   1% /mnt
-
 ```
 
 
