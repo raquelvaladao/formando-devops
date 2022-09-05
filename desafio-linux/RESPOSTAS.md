@@ -10,9 +10,9 @@ Também adicionei ele ao grupo root.
 ### 2.1 Criação de usuários
 
 1-Criei o usuário com parâmetros pra o uid ser 1111 </br>
-2-adicionei ele ao grupo bin com "gpasswd -a getup" </br>
+2-adicionei ele ao grupo bin com "gpasswd -a getup bin" </br>
 3-mudei o gid do grupo getup pra 2222 com "groupmod" </br>
-3-dei unlock na senha
+*dei unlock na senha.
 
 
 ```
@@ -37,14 +37,37 @@ Connection to localhost closed.
 
 ```  
 
-### 3.3 Análise de logs e configurações ssh
-
-[ FAZENDO AINDA ]
-
+## 3.3 Análise de logs e configurações ssh </br>
+0- Colei a chave no home do vagrant </br>
 1-Decodifiquei o base64 com "base64 -d id_rsa-desafio-linux-devel.gz.b64 > id.gz"</br>
 2 - Dezipei o gz com "gzip -d id.gz" </br>
-3-Obtive a openssh privatekey
+3 - Obtive a openssh private key "id". Tentei conectar vagrant via ssh com o comando "ssh -i id devel@localhost" e deu erro. Então eu abri os logs </br>
+4 - em /var/log/messages subiu o erro 
+</br>
+&emsp;&emsp;&emsp;"Authentication refused: bad ownership or modes for file /home/devel/.ssh/authorized_keys"
+</br>
+### 6 - troquei a permissão authorized_keys do devel de 0777 pra 0600  </br>
+5 - ssh funcionou normalmente passando a private key sem pedir senha como se ve a seguir </br>
 
+```
+[vagrant@centos8 ~]$  ssh -i id devel@localhost
+Last login: Mon Sep  5 21:07:09 2022 from 127.0.0.1
+[devel@centos8 ~]$ exit
+logout
+Connection to localhost closed.
+[vagrant@centos8 ~]$
+
+```
+No modo de ssh verboso (-vv) se vê o uso da chave id
+```
+(...)
+debug1: Next authentication method: publickey
+debug1: Trying private key: id
+debug2: we sent a publickey packet, wait for reply
+debug1: Authentication succeeded (publickey).
+```
+
+** obs: a chave eu tive que formatar no Puttygen pra passar de openssh private pra rsa private.</br>
 
 ## 4. Systemd
 
