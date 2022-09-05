@@ -9,9 +9,11 @@ Também adicionei ele ao grupo root.
 
 ### 2.1 Criação de usuários
 
-1-Criei o usuário com parâmetros pra o uid ser 1111
-2-adicionei ele ao grupo bin com "gpasswd -a getup"
-3-mudei o gid do grupo getup pra 2222 com "groupmod"
+1-Criei o usuário com parâmetros pra o uid ser 1111 </br>
+2-adicionei ele ao grupo bin com "gpasswd -a getup" </br>
+3-mudei o gid do grupo getup pra 2222 com "groupmod" </br>
+3-dei unlock na senha
+
 
 ```
 [getup@centos8 ~]$ id
@@ -20,16 +22,27 @@ uid=1111(getup) gid=2222(getup) groups=2222(getup),1(bin)
 
 ### 3.2 Criação de chaves
 
-1-criei o par de chaves usando ssh-keygen
-2-ssh-copy-id da chave pra um usuário remoto (no caso o próprio vagrant, porque acessei o próprio server via ssh)
-3-ssh vagrant@localhost
+1 - criei o par de chaves usando ssh-keygen</br>
+2 - ssh-copy-id da chave pra um usuário remoto (no caso o próprio vagrant, porque acessei o próprio server via ssh)</br>
+3 - ssh vagrant@localhost. O resultado: </br>
+
+```
+[vagrant@centos8 ~]$ ssh vagrant@localhost
+Last login: Mon Sep  5 18:21:21 2022 from 127.0.0.1
+[vagrant@centos8 ~]$ exit
+logout
+Connection to localhost closed.
+[vagrant@centos8 ~]$
+
+
+```  
 
 ### 3.3 Análise de logs e configurações ssh
 
 [ FAZENDO AINDA ]
 
-1-Decodifiquei o base64 com "base64 -d id_rsa-desafio-linux-devel.gz.b64 > id.gz"
-2 - Dezipei o gz com "gzip -d id.gz"
+1-Decodifiquei o base64 com "base64 -d id_rsa-desafio-linux-devel.gz.b64 > id.gz"</br>
+2 - Dezipei o gz com "gzip -d id.gz" </br>
 3-Obtive a openssh privatekey
 
 
@@ -79,7 +92,7 @@ cp rootCA.crt /etc/pki/ca-trust/source/anchors/
 update-ca-trust extract
 ```
 
-#### 3-Alteração do arquivo de config. do NGINX pra aceitar conexões na porta 443 com SSL on. </br></br>
+#### 3-Alteração do arquivo de config. do NGINX pra aceitar conexões na porta 443 com SSL on. </br>
 
 
 ### 4-Response completa do curl "https://www.desafio.local" com verificação do certificado
@@ -157,7 +170,7 @@ rtt min/avg/max/mdev = 29.478/29.974/31.253/0.752 ms
 
 ### 6.2 HTTP
 
-Apresente a resposta completa, com headers, da URL `https://httpbin.org/response-headers?hello=world`
+Resposta completa, com headers, da URL `https://httpbin.org/response-headers?hello=world`
 
 ```
 
