@@ -12,8 +12,7 @@ Também adicionei ele ao grupo root.
 1-Criei o usuário com parâmetros pra o uid ser 1111 </br>
 2-adicionei ele ao grupo bin com "gpasswd -a getup bin" </br>
 3-mudei o gid do grupo getup pra 2222 com "groupmod" </br>
-*dei unlock na senha.
-
+4-adicionei ao arquivo sudoers com a configuração de NO PASSOWRD pra não precisar da senha
 
 ```
 [getup@centos8 ~]$ id
@@ -46,9 +45,9 @@ Connection to localhost closed.
 </br>
 &emsp;&emsp;&emsp;"Authentication refused: bad ownership or modes for file /home/devel/.ssh/authorized_keys"
 </br>
-### 6 - troquei a permissão authorized_keys do devel de 0777 pra 0600  </br>
-5 - ssh funcionou normalmente passando a private key sem pedir senha como se ve a seguir </br>
-
+#### 6 - troquei a permissão authorized_keys do devel de 0777 pra 0600  </br>
+5 - ssh funcionou normalmente passando a private key sem pedir senha. Resultado: </br>
+#### **obs: a chave eu tive que formatar no Puttygen pra passar de openssh private pra rsa private.</br>
 ```
 [vagrant@centos8 ~]$  ssh -i id devel@localhost
 Last login: Mon Sep  5 21:07:09 2022 from 127.0.0.1
@@ -66,8 +65,6 @@ debug1: Trying private key: id
 debug2: we sent a publickey packet, wait for reply
 debug1: Authentication succeeded (publickey).
 ```
-
-** obs: a chave eu tive que formatar no Puttygen pra passar de openssh private pra rsa private.</br>
 
 ## 4. Systemd
 
