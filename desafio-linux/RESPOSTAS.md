@@ -84,7 +84,9 @@ debug1: Authentication succeeded (publickey).
 
 ### 5.1 Criação de certificados
 
-#### 1-criei certificado ROOT, SERVER e loguei
+#### 1-Adicionei www.desafio.local em /etc/hosts </br>
+
+#### 2-criei certificado ROOT, SERVER e loguei
 Utilizei esses comandos para criar o rootCA e o serverCA:
 
 ```
@@ -104,7 +106,7 @@ openssl x509 -in server.crt -text -noout
 
 ```
 
-#### 2-adicionei ROOT CA à trusted store:
+#### 3-adicionei ROOT CA à trusted store:
 ```
 yum install ca-certificates
 update-ca-trust force-enable
@@ -112,10 +114,9 @@ cp rootCA.crt /etc/pki/ca-trust/source/anchors/
 update-ca-trust extract
 ```
 
-#### 3-Alteração do arquivo de config. do NGINX pra aceitar conexões na porta 443 com SSL on. </br>
+#### 4-Alteração do arquivo de config. do NGINX pra aceitar conexões na porta 443 com SSL on. </br>
 
-
-### 4-Response completa do curl "https://www.desafio.local" com verificação do certificado
+### 5-Response completa do curl "https://www.desafio.local" com verificação do certificado
 
 ```
 RESPONSE:
