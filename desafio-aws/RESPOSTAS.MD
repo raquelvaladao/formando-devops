@@ -1,5 +1,6 @@
 ## 1 - Setup de ambiente
-1) Ok.
+1) Executei os comandos e acessei o IP da instância na AWS.
+2) Aparece o texto "Formando DevOps - EC2 Rodando na Region: us-east-1"
 
 ## 2 - Networking
 1) Mudei as inbound rules do security group atachado na instância
