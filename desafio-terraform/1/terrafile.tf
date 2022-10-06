@@ -3,8 +3,6 @@ module "kind_child_module" {
   source = "./mymod"
   cluster_name = var.cluster_name
   kubernetes_version = var.kubernetes_version
-  
-  cluster_config_path = "~/.kube/config"
 }
 
 output "api_endpoint" {
