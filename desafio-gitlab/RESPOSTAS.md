@@ -1,7 +1,7 @@
 
 
 ## Depois de alterar o texto e fazer deploy com a pipeline
-![alt text](./depois_de_mudar_final.png)
+![alt text](./depois_de_mudar.png)
 
 
 ## Histórico de commits
