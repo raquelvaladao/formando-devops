@@ -4,7 +4,8 @@
 ![alt text](./depois_de_mudar.png)
 
 
-## Histórico de commits
+## Histórico de commits (link e foto)
+https://gitlab.com/raquelvaladao/formando-devops-desafio/-/commits/main
 ![alt text](./historico_commit.png)
 
 
