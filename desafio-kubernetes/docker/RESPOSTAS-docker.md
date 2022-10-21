@@ -23,7 +23,7 @@ O dockerfile referente a essa questão está em /questao_2 desse repositório e 
 docker image build -t myscript:1.0 .
 docker container run myscript:1.0
 ```
-![alt text](desafio-kubernetes\questao_4\script_rodando.png)
+![alt text](questao_4/script_rodando.png)
 
 ### 5 - Execute um container da imagem nginx com limite de memória 128MB e 1/2 CPU.
 ```bash
