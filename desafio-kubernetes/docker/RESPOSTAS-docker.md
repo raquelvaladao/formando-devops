@@ -15,10 +15,12 @@ docker container run -d -p 8080:80 mynginx:1.0.0
 ```
 
 ### 3 - Faça o mesmo que a questão anterior (2), mas utilizando a porta 90 no container. O arquivo de configuração do nginx deve existir no host e ser read-only no container.
- O dockerfile e o arquivo .conf referentes a essa questão estão em /questao_3 desse repositório e os comandos utilizados pra rodar foram:
+ O dockerfile e o arquivo .conf referentes a essa questão estão em /questao_3 desse repositório.
+ Eu tinha pensado tanto em dar um RUN chmod 0400 no Dockerfile quanto criar um volume read-only com o arquivo .conf.
+ Resolvi manter a segunda resolução e os comandos utilizados pra rodar foram:
 ```bash
-docker image build -t mynginx:1.0.0 .
-docker container run -d -p 8080:90 mynginx:1.0.0 
+docker image build -t mine:1.0 .
+docker container run -d -p 8088:90 --mount type=bind,src=$(pwd)/templ,dst=/etc/nginx/conf.d/,ro mine:1.0
 ```
 
 ### 4 - Construa uma imagem para executar o programa abaixo:
