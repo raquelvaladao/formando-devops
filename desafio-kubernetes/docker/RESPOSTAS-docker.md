@@ -15,10 +15,14 @@ docker container run -d -p 8080:80 mynginx:1.0.0
 ```
 
 ### 3 - Faça o mesmo que a questão anterior (2), mas utilizando a porta 90 no container. O arquivo de configuração do nginx deve existir no host e ser read-only no container.
-## TBA
+ O dockerfile e o arquivo .conf referentes a essa questão estão em /questao_3 desse repositório e os comandos utilizados pra rodar foram:
+```bash
+docker image build -t mynginx:1.0.0 .
+docker container run -d -p 8080:90 mynginx:1.0.0 
+```
 
 ### 4 - Construa uma imagem para executar o programa abaixo:
-O dockerfile referente a essa questão está em /questao_2 desse repositório e os comandos utilizados pra rodar foram:
+O dockerfile e o arquivo .py referentes a essa questão estão em /questao_2 desse repositório e os comandos utilizados pra rodar foram:
 ```bash
 docker image build -t myscript:1.0 .
 docker container run myscript:1.0
