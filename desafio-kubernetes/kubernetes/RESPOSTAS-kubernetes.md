@@ -5,7 +5,7 @@ Criei um DaemonSet e uma toleration para não sobrepor a taint do node master.
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: daemon-nginx
+  name: meu-spread
 spec:
   selector:
     matchLabels:
@@ -30,7 +30,7 @@ spec:
 ```
 
 ## 4 - crie um deploy chamado meuweb com a imagem nginx:1.16 que seja executado exclusivamente no node master.
-Adicionei uma toleration pra taint "NoSchedule" existente no node master
+- Adicionei uma toleration pra taint "NoSchedule" existente no node master. Usei nodeSelector para selecioná-lo.
 ```bash
 apiVersion: apps/v1
 kind: Deployment
@@ -62,6 +62,46 @@ spec:
 ```bash
 kubectl set image deploy meuweb nginx=nginx:1.19
 ```
+## 7 - quais as linhas de comando para:
+### criar um deploy chamado `pombo` com a imagem de `nginx:1.11.9-alpine` com 4 réplicas;
+```bash
+kubectl create deploy pombo --image=nginx:1.11.9-alpine -r 4
+```
+### alterar a imagem para `nginx:1.16` e registre na annotation automaticamente;
+```bash
+kubectl set image deploy pombo nginx=nginx:1.16 --record
+```
+### alterar a imagem para 1.19 e registre novamente; 
+```bash
+kubectl set image deploy pombo nginx=nginx:1.19 --record
+```
+### imprimir a historia de alterações desse deploy;
+```bash
+kubectl rollout history deployment pombo
+```
+### voltar para versão 1.11.9-alpine baseado no historico que voce registrou.
+```bash
+kubectl rollout undo deploy pombo --to-revision=1
+```
+### criar um ingress chamado `web` para esse deploy
+```bash
+____________________________________________
+```
+
+## 11 - linha de comando para listar todos os serviços do cluster do tipo LoadBalancer mostrando tambem selectors.
+```bash
+ kubectl get svc -o wide | grep LoadBalancer
+```
+
+## 19 - com uma linha de comando escale um deploy chamado basico no namespace azul para 10 replicas.
+```bash
+ kubectl scale deployment basico -n azul --replicas=10
+```
+
+## 20 - com uma linha de comando, crie um autoscale de cpu com 90% de no minimo 2 e maximo de 5 pods para o deploy site no namespace frontend.
+```bash
+kubectl autoscale deployment site -n frontend --min=2 --max=5 --cpu-percent=90
+```
 
 ## 22 - marque o node o nó k8s-worker1 do cluster para que nao aceite nenhum novo pod.
 ```bash
@@ -69,6 +109,10 @@ kubectl taint node meuk8s-worker key1=value1:NoSchedule
 ```
 
 ## 23 - esvazie totalmente e de uma unica vez esse mesmo nó com uma linha de comando.
+```bash
+
+
+```
 
 ## 24 - qual a maneira de garantir a criaçao de um pod ( sem usar o kubectl ou api do k8s ) em um nó especifico.
 ```bash
@@ -76,33 +120,3 @@ Usando nodeSelector abaixo do spec:
 nodeSelector:
     label: value
 ```
-
-
-8,11,19
-1
-2 * DAEMONSET
-3
-4 OK
-5 OK
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22 OK
-23
-24 OK
-25
-26
-27
