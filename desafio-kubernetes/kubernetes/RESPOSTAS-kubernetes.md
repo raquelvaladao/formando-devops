@@ -1,7 +1,7 @@
 ## 2 - crie o manifesto de um recurso que seja executado em todos os nós do cluster com a imagem nginx:latest com nome meu-spread, nao sobreponha ou remova qualquer taint de qualquer um dos nós.
 Criei um DaemonSet e uma toleration para não sobrepor a taint do node master.
 
-```bash
+```yaml
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -32,7 +32,7 @@ ____________________________________________
 
 ## 4 - crie um deploy chamado meuweb com a imagem nginx:1.16 que seja executado exclusivamente no node master.
 - Adicionei uma toleration pra taint "NoSchedule" existente no node master. Usei nodeSelector para selecioná-lo.
-```bash
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -100,7 +100,8 @@ kubectl expose deploy guardaroupa --port=6379
 ```
 
 ## 9 - crie um recurso para aplicação stateful com os seguintes parametros:
-```bash
+- Fiquei pensando se deveria fazer uma aplicação com Deploymant+PVC ou um StatefulSet. Porém, como não sei se cada réplica deve ter seu próprio PVC ou se devem compartilhar um, eu resolvi fazer um Deployment+PVC, de modo que todas as réplicas irão compartilhar esse PVC a partir do storageClass provisionado pelo kind.
+```yaml
 ---
 apiVersion: v1
 kind: Namespace
@@ -108,46 +109,92 @@ metadata:
   name: backend
 spec: {}
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meusiteset
+  namespace: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: site
+  template:
+    metadata:
+      labels:
+        app: site
+    spec:
+      containers:
+      - name: name
+        image: nginx
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: volume
+          mountPath: /data/
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: meupvc
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: primeiro-pvc
+  name: meupvc
+  namespace: backend
+  labels:
+    app: site
 spec:
+  storageClassName: standard
   accessModes:
-  - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-  storageClassName: standard
+```
+
+## 10 - crie um recurso com 2 replicas, chamado balaclava com a imagem redis, usando as labels nos pods, replicaset e deployment, backend=balaclava e minhachave=semvalor no namespace backend.
+```yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backend
+spec: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: meusiteset
   name: meusiteset
-  namespace: backend 
+  namespace: backend
+  labels:
+    backend: balaclava
+    minhachave: semvalor
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: meusiteset
-  strategy: {}
+      backend: balaclava
+      minhachave: semvalor
   template:
     metadata:
       labels:
-        app: meusiteset
+        backend: balaclava
+        minhachave: semvalor
     spec:
       containers:
-      - image: nginx:latest
-        name: nginx
-        resources: {}        
-
-```
-
-## 10 - crie um recurso com 2 replicas, chamado balaclava com a imagem redis, usando as labels nos pods, replicaset e deployment, backend=balaclava e minhachave=semvalor no namespace backend.
-```bash
-__________________________________
+      - name: name
+        image: nginx
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: volume
+          mountPath: /pvc/
+      volumes:
+      - name: volume
+        emptyDir: {}
 ```
 ## 11 - linha de comando para listar todos os serviços do cluster do tipo LoadBalancer mostrando tambem selectors.
 ```bash
