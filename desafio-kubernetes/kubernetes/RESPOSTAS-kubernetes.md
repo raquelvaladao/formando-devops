@@ -431,12 +431,12 @@ ingress-nginx   ingress-nginx-controller                             LoadBalance
 
 ### 22 - marque o node o nó k8s-worker1 do cluster para que nao aceite nenhum novo pod.
 ```bash
-kubectl taint node meuk8s-worker key1=value1:NoSchedule
+kubectl taint node meuk8s-worker1 key1=value1:NoSchedule
 ```
 
 ### 23 - esvazie totalmente e de uma unica vez esse mesmo nó com uma linha de comando.
 ```bash
-_________________________________
+kubectl taint node meuk8s-worker1 key1=value1:NoExecute
 ```
 
 ### 24 - qual a maneira de garantir a criaçao de um pod ( sem usar o kubectl ou api do k8s ) em um nó especifico.
@@ -444,5 +444,44 @@ _________________________________
 Usando nodeSelector abaixo do spec:
 nodeSelector:
     label: value
+```
+
+### 25 - criar uma serviceaccount userx no namespace developer. essa serviceaccount só pode ter permissao total sobre pods (inclusive logs) e deployments no namespace developer. descreva o processo para validar o acesso ao namespace do jeito que achar melhor.
+
+```bash
+kubectl create namespace developer
+kubectl create serviceaccount userx -n developer
+```
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-admin-developer
+  namespace: developer
+rules:
+- apiGroups: [""]
+  resources: ["pods", "deployments", "pods/log"]
+  verbs: ["list", "create", "delete", "update", "patch", "deletecollection", "get", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: userx
+  namespace: developer
+roleRef:
+  kind: Role
+  name: pod-admin-developer
+  apiGroup: rbac.authorization.k8s.io
+```
+
+
+### 27 - qual o kubectl get que traz o status do scheduler, controller-manager e etcd ao mesmo tempo
+```bash
+kubectl get componentstatuses -A
 ```
 
