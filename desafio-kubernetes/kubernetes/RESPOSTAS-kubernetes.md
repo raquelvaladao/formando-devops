@@ -101,6 +101,12 @@ spec:
 ```bash
 kubectl set image deploy meuweb nginx=nginx:1.19
 ```
+
+### 6 - quais linhas de comando para instalar o ingress-nginx controller usando helm, com os seguintes parametros;
+```bash
+____________________________________
+```
+
 ### 7 - quais as linhas de comando para:
 #### criar um deploy chamado `pombo` com a imagem de `nginx:1.11.9-alpine` com 4 réplicas;
 ```bash
