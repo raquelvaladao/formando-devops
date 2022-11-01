@@ -1,5 +1,5 @@
 ## 2 - crie o manifesto de um recurso que seja executado em todos os nós do cluster com a imagem nginx:latest com nome meu-spread, nao sobreponha ou remova qualquer taint de qualquer um dos nós.
-Criei um DaemonSet e uma toleration para não sobrepor a taint do node master.
+- Criei um DaemonSet e uma toleration para não sobrepor a taint do node master.
 
 ```yaml
 apiVersion: apps/v1
@@ -215,8 +215,36 @@ kubectl create configmap configsite --namespace=site --from-file=index.html
 ```
 
 ## 14 - crie um recurso chamado meudeploy, com a imagem nginx:latest, que utilize a secret criada no exercicio 11 como arquivos no diretorio /app.
-```bash
-_________________________________
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meudeploy
+  namespace: segredosdesucesso
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: name
+        image: nginx:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: meusegredo
+          mountPath: /app
+          readOnly: true
+      volumes:
+      - name: meusegredo
+        secret:
+          secretName: meusegredo
 ```
 
 ## 15 - crie um recurso chamado depconfigs, com a imagem nginx:latest, que utilize o configMap criado no exercicio 12 e use seu index.html como pagina principal desse recurso.
@@ -225,13 +253,58 @@ _________________________________
 ```
 
 ## 16 - crie um novo recurso chamado meudeploy-2 com a imagem nginx:1.16 , com a label chaves=secretas e que use todo conteudo da secret como variavel de ambiente criada no exercicio 11.
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meudeploy-2
+  namespace: segredosdesucesso
+  labels:
+    chaves: secretas
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.16
+        ports:
+        - containerPort: 80
+        env:
+        - name: UM_SEGREDO
+          valueFrom:
+            secretKeyRef:
+              name: meusegredo
+              key: segredo
+```
 
+## 17 - linhas de comando que;
+
+### crie um namespace `cabeludo`;
 ```bash
-_________________________________
+kubectl create namespace cabeludo
+```
+### um deploy chamado `cabelo` usando a imagem `nginx:latest`; 
+```bash
+kubectl create deploy cabelo --image=nginx:latest --port=80 --namespace=cabeludo
+```
+### uma secret chamada `acesso` com as entradas `username:pavao` e `password: asabranca`;
+```bash
+_________________
+```
+### exponha variaveis de ambiente chamados USUARIO para username e SENHA para a password.
+```bash
+_________________
 ```
 
 ## 18 - crie um deploy redis usando a imagem com o mesmo nome, no namespace cachehits e que tenha o ponto de montagem /data/redis de um volume chamado app-cache que NÂO deverá ser persistente.
-```bash
+```yaml
 ---
 apiVersion: v1
 kind: Namespace
@@ -270,7 +343,11 @@ kubectl autoscale deployment site -n frontend --min=2 --max=5 --cpu-percent=90
 
 ## 21 - com uma linha de comando, descubra o conteudo da secret piadas no namespace meussegredos com a entrada segredos.
 ```bash
-_________________________________
+echo 'YVc1bmNtVnpjeTF1WjJsdWVDQWdJR2x1WjNKbGMzTXRibWRwYm5ndFkyOXVkSEp2Ykd4bGNpQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdURzloWkVKaGJHRnVZMlZ5SUNBZ01UQXVNak16TGpFM0xqZzBJQ0FnSURFNU1pNHhOamd1TVM0ek5TQWdJRGd3T2pNeE9URTJMMVJEVUN3ME5ETTZNekUzT1RRdlZFTlFJQ0FnSUNBeU0yZ2dJQ0JoY0hBdWEzVmlaWEp1WlhSbGN5NXBieTlqYjIxd2IyNWxiblE5WTI5dWRISnZiR3hsY2l4aGNIQXVhM1ZpWlhKdVpYUmxjeTVwYnk5cGJuTjBZVzVqWlQxcGJtZHlaWE56TFc1bmFXNTRMR0Z3Y0M1cmRXSmxjbTVsZEdWekxtbHZMMjVoYldVOWFXNW5jbVZ6Y3kxdVoK' | base64 --decode
+
+echo 'aW5ncmVzcy1uZ2lueCAgIGluZ3Jlc3MtbmdpbngtY29udHJvbGxlciAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTG9hZEJhbGFuY2VyICAgMTAuMjMzLjE3Ljg0ICAgIDE5Mi4xNjguMS4zNSAgIDgwOjMxOTE2L1RDUCw0NDM6MzE3OTQvVENQICAgICAyM2ggICBhcHAua3ViZXJuZXRlcy5pby9jb21wb25lbnQ9Y29udHJvbGxlcixhcHAua3ViZXJuZXRlcy5pby9pbnN0YW5jZT1pbmdyZXNzLW5naW54LGFwcC5rdWJlcm5ldGVzLmlvL25hbWU9aW5ncmVzcy1uZ' | base64 --decode
+
+ingress-nginx   ingress-nginx-controller                             LoadBalancer   10.233.17.84    192.168.1.35   80:31916/TCP,443:31794/TCP     23h   app.kubernetes.io/component=controller,app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nbase64: invalid input
 ```
 
 ## 22 - marque o node o nó k8s-worker1 do cluster para que nao aceite nenhum novo pod.
@@ -290,31 +367,3 @@ nodeSelector:
     label: value
 ```
 
-8,11,19
-1
-2 OK
-3 
-4 OK
-5 OK
-6
-7 OK *ultimo item
-8
-9 OK
-10
-11 OK *melhorar?
-12 OK
-13 OK *checar
-14
-15
-16
-17
-18 OK
-19 OK
-20 OK
-21
-22 OK
-23
-24 OK
-25
-26
-27
