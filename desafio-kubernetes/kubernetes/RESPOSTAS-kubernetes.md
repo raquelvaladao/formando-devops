@@ -31,8 +31,41 @@ spec:
 ```
 
 ## 3 - crie um deploy meu-webserver com a imagem nginx:latest e um initContainer com a imagem alpine. O initContainer deve criar um arquivo /app/index.html, tenha o conteudo "HelloGetup" e compartilhe com o container de nginx que só poderá ser inicializado se o arquivo foi criado.
-```bash
-____________________________________________
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meu-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: name
+        image: nginx:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: volume-initcontainer
+          mountPath: /usr/share/nginx/html
+      initContainers:
+      - name: create-index-html
+        image: alpine
+        command: ["/bin/sh", "-c"]
+        args: ["echo HelloGetup > /app/index.html"]
+        volumeMounts:
+        - name: volume-initcontainer
+          mountPath: /app
+      volumes:
+      - name: volume-initcontainer
+        emptyDir: {}
 ```
 
 ## 4 - crie um deploy chamado meuweb com a imagem nginx:1.16 que seja executado exclusivamente no node master.
@@ -253,8 +286,37 @@ spec:
 ```
 
 ## 15 - crie um recurso chamado depconfigs, com a imagem nginx:latest, que utilize o configMap criado no exercicio 12 e use seu index.html como pagina principal desse recurso.
-```bash
-_________________________________
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: depconfigs
+  namespace: site
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: name
+        image: nginx:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: volume-configmap
+          mountPath:  /usr/share/nginx/html
+          readOnly: true
+      volumes:
+      - name: volume-configmap
+        configMap:
+          name: configsite
+
 ```
 
 ## 16 - crie um novo recurso chamado meudeploy-2 com a imagem nginx:1.16 , com a label chaves=secretas e que use todo conteudo da secret como variavel de ambiente criada no exercicio 11.
@@ -373,4 +435,3 @@ Usando nodeSelector abaixo do spec:
 nodeSelector:
     label: value
 ```
-
