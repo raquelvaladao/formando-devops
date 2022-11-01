@@ -1,3 +1,8 @@
+## 1 - com uma unica linha de comando capture somente linhas que contenham "erro" do log do pod serverweb no namespace meusite que tenha a label app: ovo.
+```bash
+ kubectl logs -l app=ovo -n meusite | grep error
+```
+
 ## 2 - crie o manifesto de um recurso que seja executado em todos os nós do cluster com a imagem nginx:latest com nome meu-spread, nao sobreponha ou remova qualquer taint de qualquer um dos nós.
 - Criei um DaemonSet e uma toleration para não sobrepor a taint do node master.
 
@@ -296,11 +301,13 @@ kubectl create deploy cabelo --image=nginx:latest --port=80 --namespace=cabeludo
 ```
 ### uma secret chamada `acesso` com as entradas `username:pavao` e `password: asabranca`;
 ```bash
-_________________
+kubectl create secret generic acesso --from-literal=username=pavao --from-literal=password=asabranca -n cabeludo
 ```
 ### exponha variaveis de ambiente chamados USUARIO para username e SENHA para a password.
+- Fiquei em dúvida se deveria só passar do secret pras envs, por alteração do yaml, ou usando kubectl e com os nomes customizados de vez. Entendi que seria essa última opção, e por isso, ao invés de editar o yaml ou usar `set env --from secret`, que não traria os nomes customizados pras envs, usei o seguinte:
 ```bash
-_________________
+kubectl set env deploy/cabelo -n cabeludo USUARIO=$(kubectl get secret acesso -n cabeludo -o jsonpath="{.data['username']}" | base64 -d)
+kubectl set env deploy/cabelo -n cabeludo SENHA=$(kubectl get secret acesso -n cabeludo -o jsonpath="{.data['password']}" | base64 -d)
 ```
 
 ## 18 - crie um deploy redis usando a imagem com o mesmo nome, no namespace cachehits e que tenha o ponto de montagem /data/redis de um volume chamado app-cache que NÂO deverá ser persistente.
