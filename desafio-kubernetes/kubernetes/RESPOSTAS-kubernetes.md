@@ -422,11 +422,8 @@ kubectl autoscale deployment site -n frontend --min=2 --max=5 --cpu-percent=90
 
 ### 21 - com uma linha de comando, descubra o conteudo da secret piadas no namespace meussegredos com a entrada segredos.
 ```bash
-echo 'YVc1bmNtVnpjeTF1WjJsdWVDQWdJR2x1WjNKbGMzTXRibWRwYm5ndFkyOXVkSEp2Ykd4bGNpQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdURzloWkVKaGJHRnVZMlZ5SUNBZ01UQXVNak16TGpFM0xqZzBJQ0FnSURFNU1pNHhOamd1TVM0ek5TQWdJRGd3T2pNeE9URTJMMVJEVUN3ME5ETTZNekUzT1RRdlZFTlFJQ0FnSUNBeU0yZ2dJQ0JoY0hBdWEzVmlaWEp1WlhSbGN5NXBieTlqYjIxd2IyNWxiblE5WTI5dWRISnZiR3hsY2l4aGNIQXVhM1ZpWlhKdVpYUmxjeTVwYnk5cGJuTjBZVzVqWlQxcGJtZHlaWE56TFc1bmFXNTRMR0Z3Y0M1cmRXSmxjbTVsZEdWekxtbHZMMjVoYldVOWFXNW5jbVZ6Y3kxdVoK' | base64 --decode
 
-echo 'aW5ncmVzcy1uZ2lueCAgIGluZ3Jlc3MtbmdpbngtY29udHJvbGxlciAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTG9hZEJhbGFuY2VyICAgMTAuMjMzLjE3Ljg0ICAgIDE5Mi4xNjguMS4zNSAgIDgwOjMxOTE2L1RDUCw0NDM6MzE3OTQvVENQICAgICAyM2ggICBhcHAua3ViZXJuZXRlcy5pby9jb21wb25lbnQ9Y29udHJvbGxlcixhcHAua3ViZXJuZXRlcy5pby9pbnN0YW5jZT1pbmdyZXNzLW5naW54LGFwcC5rdWJlcm5ldGVzLmlvL25hbWU9aW5ncmVzcy1uZ' | base64 --decode
-
-ingress-nginx   ingress-nginx-controller                             LoadBalancer   10.233.17.84    192.168.1.35   80:31916/TCP,443:31794/TCP     23h   app.kubernetes.io/component=controller,app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nbase64: invalid input
+kubectl get secrets piadas -n meussegredos --template={{.data.entrada}} | base64 -d
 ```
 
 ### 22 - marque o node o nó k8s-worker1 do cluster para que nao aceite nenhum novo pod.
