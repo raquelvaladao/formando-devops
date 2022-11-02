@@ -104,7 +104,19 @@ kubectl set image deploy meuweb nginx=nginx:1.19
 
 ### 6 - quais linhas de comando para instalar o ingress-nginx controller usando helm, com os seguintes parametros;
 ```bash
-____________________________________
+echo 'controller:
+  hostPort:
+    enabled: true
+  service:
+    type: NodePort
+  updateStrategy:
+    type: Recreate' > override.yaml
+
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash -
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+helm install ingress-nginx -f override.yaml ingress-nginx/ingress-nginx
 ```
 
 ### 7 - quais as linhas de comando para:
@@ -127,10 +139,6 @@ kubectl rollout history deployment pombo
 #### voltar para versão 1.11.9-alpine baseado no historico que voce registrou.
 ```bash
 kubectl rollout undo deploy pombo --to-revision=1
-```
-#### criar um ingress chamado `web` para esse deploy
-```bash
-____________________________________________
 ```
 
 ### 8 - linhas de comando para;
@@ -444,9 +452,7 @@ kubectl taint node meuk8s-worker1 key1=value1:NoExecute
 
 ### 24 - qual a maneira de garantir a criaçao de um pod ( sem usar o kubectl ou api do k8s ) em um nó especifico.
 ```bash
-Usando nodeSelector abaixo do spec:
-nodeSelector:
-    label: value
+Usando nodeSelector em conjunto com labels específicas
 ```
 
 ### 25 - criar uma serviceaccount userx no namespace developer. essa serviceaccount só pode ter permissao total sobre pods (inclusive logs) e deployments no namespace developer. descreva o processo para validar o acesso ao namespace do jeito que achar melhor.
@@ -482,9 +488,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
-
 ### 27 - qual o kubectl get que traz o status do scheduler, controller-manager e etcd ao mesmo tempo
 ```bash
 kubectl get componentstatuses -A
 ```
-
