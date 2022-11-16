@@ -1,5 +1,5 @@
 # 1. Gitlab
-
+## Link repo: https://gitlab.com/raquelvaladao/desafio-repo
 ```txt
  -> 1.1 pipeline com build da imagem do app
      -> 1.2 [plus] linter do Dockerfile (tip: use o https://github.com/hadolint/hadolint)
@@ -13,12 +13,12 @@ Tips:
 - Para fazer o build da imagem, utilize como base o pipeline em https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/lib/gitlab/ci/templates/Docker.gitlab-ci.yml
 - Utilize o seguinte nome para a imagem: $CI_REGISTRY/$SEU_USER_GITLAB/podinfo:$CI_COMMIT_SHORT_SHA
 
-## 1.1 / 1.2 / 1.3 - Arquivo .gitlab-ci.yaml com trivy-standalone, hadolint, template build.
+## 1.1 / 1.2 / 1.3 - Arquivo .gitlab-ci.yaml com trivy-standalone, hadolint, template de build:
 ```yaml
 stages:
-  - trivy
   - hadolint
   - build
+  - trivy
 
 docker-scan:
   image: hadolint/hadolint:latest-debian
@@ -39,12 +39,11 @@ docker-build:
         tag=""
         echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
       else
-        tag=":$CI_COMMIT_REF_SLUG"
+        tag=":$CI_COMMIT_SHORT_SHA"
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
       fi
     - docker build --pull -t "$CI_REGISTRY/$GITLAB_USER_LOGIN/desafio-repo:$CI_COMMIT_SHORT_SHA" .
     - docker push "$CI_REGISTRY/$GITLAB_USER_LOGIN/desafio-repo:$CI_COMMIT_SHORT_SHA"
-  # Run this job in a branch where a Dockerfile exists
   dependencies:
     - docker-scan
   rules:
@@ -64,7 +63,7 @@ binary-standalone-trivy:
     TRIVY_TAG: v0.34.0
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
-    IMAGE: registry.gitlab.com/raquelvaladao/desafio-repo:377452d2
+    IMAGE: $CI_REGISTRY/$GITLAB_USER_LOGIN/desafio-repo:$CI_COMMIT_SHORT_SHA
   before_script:
     - wget https://github.com/aquasecurity/trivy/releases/download/${TRIVY_TAG}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
     - tar -xf trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
@@ -75,6 +74,9 @@ binary-standalone-trivy:
         echo '$output'
         exit 1
       fi
+  dependencies:
+    - docker-build
+
 ```
 
 ## 1.4 -  Aplicação dos manifestos do cluster pelo Agent
@@ -105,14 +107,18 @@ helm upgrade --install ps gitlab/gitlab-agent \
     --set config.kasAddress=wss://kas.gitlab.com
 ```
 
-- Criar token
-- Criar arquivo de credenciais docker
-- Criar secret
-- Adicionar ImagePullSecrets no deploy
-- *Manifestos e aplicação  na questão 3
+- Criei token
+- Criei arquivo de credenciais docker
+- Criei secret
+- Adicionei ImagePullSecrets no deploy com esse secret
+- *Manifestos e aplicação aplicados pelo agent estão na questão 3
+- Agente e manifesto aplicados
+![Alerta disparado](agente.png)
+
 # 2. Terraform
 
 ## Arquivos também na pasta /q2 desse repositório.
+### obs: o repositório usado no gitlab foi gerado a partir desse código assim como o cluster kind.
 
 ### providers.tf
 ```bash
@@ -234,11 +240,11 @@ spec:
 
 ```
 
-## 3.2 -
+## 3.2 - Escalar com base em métrica
 
 ---
 
-## 3.3 - Com FluxCD
+## 3.3 - Instalar app com FluxCD
 ### Comandos
 ```bash
 curl -s https://fluxcd.io/install.sh | sudo bash
@@ -274,6 +280,8 @@ flux create helmrelease podinfo \
 
 flux get helmreleases -n default
 ```
+- App rodando fluxcd
+![Alerta disparado](podinfo-fluxcd.png)
 
 ## 4 - Observabilidade
 ```bash
@@ -286,10 +294,27 @@ flux get helmreleases -n default
      -> alertar quando observar > 3 seg.
   -> 4.6 [plus] tracing (Open Telemetry)
 ```
+#### *obs: como usei um cluster kind, forward-port estava direcionando as chamadas para localhost apenas. Assim, tive que usar 'socat' para fazer portforward do localhost pro ip da ec2 que eu estava usando.
 
 ### 4.1 - Prometheus stack - comandos
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm install prometheus prometheus-community/kube-prometheus-stack
 
+helm repo update
+
+helm install prometheus prometheus-community/kube-prometheus-stack
 ```
+
+### 4.3 - Enviar logs pro Telegram
+
+```txt
+1 - Adicionei o contact point Telegram na aba Alerting do Grafana com o respectivo chat id e bot id
+2 - Criei uma alert rule pra um dashboard
+3 - Às 21h e 21:15 foi acionado um alerta no Telegram. Contém a label grafana_folder=teste
+4 - Foto abaixo - alerta disparado
+```
+
+- contact point criado
+![Alerta disparado](contact-point.png)
+- alerta disparado
+![Alerta disparado](alerta-grafana-folder-teste.png)
