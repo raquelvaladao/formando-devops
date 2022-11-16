@@ -240,6 +240,7 @@ spec:
 
 ```
 - teste readiness após chamar o endpoint /readyz/disable pra forçar erro
+
 ![Readiness](imgs/apos-readyz-disable-q1.png)
 
 ## 3.2 - Escalar com base em métrica
