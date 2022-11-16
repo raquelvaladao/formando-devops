@@ -1,5 +1,5 @@
 # 1. Gitlab
-## Link repo: https://gitlab.com/raquelvaladao/desafio-repo
+## Link repo gitlab: https://gitlab.com/raquelvaladao/desafio-repo
 ```txt
  -> 1.1 pipeline com build da imagem do app
      -> 1.2 [plus] linter do Dockerfile (tip: use o https://github.com/hadolint/hadolint)
@@ -112,13 +112,13 @@ helm upgrade --install ps gitlab/gitlab-agent \
 - Criei secret
 - Adicionei ImagePullSecrets no deploy com esse secret
 - *Manifestos e aplicação aplicados pelo agent estão na questão 3
-- Agente e manifesto aplicados
+- Agente e manifesto (deploy.yaml, no gitlab e na questão 3) aplicados
 ![Alerta disparado](imgs/agente.png)
 
 # 2. Terraform
 
 ## Arquivos também na pasta /q2 desse repositório.
-### obs: o repositório usado no gitlab foi gerado a partir desse código assim como o cluster kind.
+## obs: o repositório usado no gitlab foi gerado a partir desse código abaixo assim como o cluster kind.
 
 ### providers.tf
 ```bash
@@ -182,7 +182,7 @@ variable "gitlab_token" {}
   -> 3.3 [plus] instalar app com fluxcd
 ```
 
-## 3.1 - Arquivo meusmanifestos/deploy.yaml
+## 3.1 - Arquivo meusmanifestos/deploy.yaml deployado pelo agent com liveness e readiness e limitação de recursos. Imagem puxada do registry privado do gitlab acima.
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -239,6 +239,8 @@ spec:
   type: ClusterIP
 
 ```
+- teste readiness após chamar o endpoint /readyz/disable pra forçar erro
+![Readiness](imgs/apos-readyz-disable-q1.png)
 
 ## 3.2 - Escalar com base em métrica
 
@@ -306,7 +308,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack
 ```
 
 ### 4.2 - Retenção de métricas
-
+---
 
 
 ### 4.3 - Enviar logs pro Telegram
@@ -320,5 +322,5 @@ helm install prometheus prometheus-community/kube-prometheus-stack
 
 - contact point criado
 ![Alerta disparado](imgs/contact-point.png)
-- alerta disparado
+- alerta disparado (pode ser visto pela label no telegram como afirmado acima)
 ![Alerta disparado](imgs/alerta-grafana-folder-teste.png)
