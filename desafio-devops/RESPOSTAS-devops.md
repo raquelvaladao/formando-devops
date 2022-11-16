@@ -113,7 +113,7 @@ helm upgrade --install ps gitlab/gitlab-agent \
 - Adicionei ImagePullSecrets no deploy com esse secret
 - *Manifestos e aplicação aplicados pelo agent estão na questão 3
 - Agente e manifesto aplicados
-![Alerta disparado](agente.png)
+![Alerta disparado](imgs/agente.png)
 
 # 2. Terraform
 
@@ -281,7 +281,7 @@ flux create helmrelease podinfo \
 flux get helmreleases -n default
 ```
 - App rodando fluxcd
-![Alerta disparado](podinfo-fluxcd.png)
+![Alerta disparado](imgs/podinfo-fluxcd.png)
 
 ## 4 - Observabilidade
 ```bash
@@ -305,6 +305,10 @@ helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack
 ```
 
+### 4.2 - Retenção de métricas
+
+
+
 ### 4.3 - Enviar logs pro Telegram
 
 ```txt
@@ -315,6 +319,6 @@ helm install prometheus prometheus-community/kube-prometheus-stack
 ```
 
 - contact point criado
-![Alerta disparado](contact-point.png)
+![Alerta disparado](imgs/contact-point.png)
 - alerta disparado
-![Alerta disparado](alerta-grafana-folder-teste.png)
+![Alerta disparado](imgs/alerta-grafana-folder-teste.png)
